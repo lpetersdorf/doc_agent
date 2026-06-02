@@ -1,4 +1,9 @@
 {
+  "name": "solution-agent-marketplace",
+  "owner": {
+    "name": "Lukas Petersdorf",
+    "email": "lukas.petersdorf@blueforte.com"
+  },
   "plugins": [
     {
       "name": "solution-agent",
