@@ -1,7 +1,7 @@
 ---
 name: "diagram-analyzer"
 description: "Use this agent when architecture diagrams, system diagrams, or technical images need to be analyzed and described. The agent finds and interprets image files (PNG, JPG, SVG), draw.io files, PlantUML, and Mermaid diagrams, then produces a structured description ready for the confluence-publisher.\n\n<example>\nContext: A project contains architecture diagrams that need to be documented.\nuser: \"Analysiere die Architekturbilder in diesem Projekt\"\nassistant: \"Ich starte den diagram-analyzer, um die vorhandenen Diagramme zu interpretieren.\"\n<commentary>\nThe user wants architecture images analyzed. Use the diagram-analyzer agent.\n</commentary>\n</example>\n\n<example>\nContext: The confluence-publisher found image files and needs them interpreted.\nuser: \"Es gibt ein architecture.png im Repo, was zeigt das?\"\nassistant: \"Ich nutze den diagram-analyzer, um das Bild zu interpretieren.\"\n<commentary>\nImage interpretation before documentation — use diagram-analyzer.\n</commentary>\n</example>\n\n<example>\nContext: A developer wants to understand a complex architecture diagram.\nuser: \"Was zeigt dieses draw.io-Diagramm?\"\nassistant: \"Ich starte den diagram-analyzer für eine detaillierte Analyse.\"\n<commentary>\nDiagram analysis request — use diagram-analyzer.\n</commentary>\n</example>"
-model: opus
+model: sonnet
 color: purple
 ---
 
