@@ -120,21 +120,74 @@ Enthaltene Abschnitte:
 ⚠️  Offene Punkte: [Anzahl Stellen mit "Bitte prüfen"]
 ```
 
+### Schritt 4b: Dokumentation vor dem Publish validieren
+
+Bevor du in Confluence veröffentlichst, prüfe die Vorschau auf Qualitätsprobleme:
+
+```bash
+# Anzahl offener "Bitte prüfen"-Stellen
+grep -c "Bitte pruefen\|Bitte prüfen" dokumentation-preview.md 2>/dev/null || echo "0"
+
+# Mögliche Secrets scannen — NUR Anzahl ausgeben, keine Werte
+grep -ciE "(password|secret|api.?key|token|private.?key)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{16,}" \
+  dokumentation-preview.md 2>/dev/null || echo "0"
+```
+
+Zeige dem Nutzer eine kurze Zusammenfassung:
+```
+📋 Qualitätsprüfung vor Publish:
+  ⚠️  Offene Prüfpunkte: [Anzahl]
+  🔒  Mögliche Secrets: [Anzahl]
+```
+
+**Stopp-Bedingungen (nicht veröffentlichen, Nutzer warnen):**
+- Mögliche Secrets > 0 → **sofort stoppen**, Datei nicht veröffentlichen
+- Offene Prüfpunkte > 10 → Nutzer fragen, ob er trotzdem veröffentlichen möchte
+
 ### Schritt 5: In Confluence veröffentlichen
 
-**Nur ausführen, wenn im Kontext `confluence_space` und `confluence_title` vorhanden sind.**
+**Nur ausführen, wenn im Kontext `confluence_space` und `confluence_title` vorhanden sind** und Schritt 4b keine Stopp-Bedingung ausgelöst hat.
+
+#### 5a: Atlassian-Ressourcen auflösen
+
+```
+# Schritt 1: cloudId ermitteln
+Rufe `mcp__claude_ai_Atlassian__getAccessibleAtlassianResources` auf (keine Parameter nötig).
+→ Extrahiere `id` des ersten Confluence-Eintrags als cloudId.
+  Falls kein Ergebnis: Abbruch — "Atlassian MCP nicht verbunden oder keine Berechtigung."
+
+# Schritt 2: spaceId aus Space-Key ermitteln
+Rufe `mcp__claude_ai_Atlassian__getConfluenceSpaces` auf:
+  - cloudId: <aus Schritt 1>
+  - keys: [<confluence_space>]
+→ Extrahiere `id` des ersten Ergebnisses als spaceId.
+  Falls kein Ergebnis: Abbruch — "Space '<confluence_space>' nicht gefunden. Space Key prüfen."
+
+# Schritt 3 (optional): parentId ermitteln, wenn confluence_parent_page angegeben
+Falls confluence_parent_page ein Seitentitel (String) ist:
+  Rufe `mcp__claude_ai_Atlassian__searchConfluenceUsingCql` auf:
+    - cloudId: <aus Schritt 1>
+    - cql: title = "<confluence_parent_page>" AND space.key = "<confluence_space>" AND type = page
+  → Extrahiere id des ersten Ergebnisses als parentId.
+  Falls kein Ergebnis: parentId weglassen und vermerken: "Parent-Seite nicht gefunden — Seite wird auf Root-Ebene angelegt."
+Falls confluence_parent_page eine numerische ID ist: direkt als parentId verwenden.
+```
+
+#### 5b: Seite erstellen
 
 Verwende `mcp__claude_ai_Atlassian__createConfluencePage`:
-- `spaceKey`: aus `confluence_space`
+- `cloudId`: aus Schritt 5a
+- `spaceId`: aus Schritt 5a (numerische ID, nicht der Key)
 - `title`: aus `confluence_title`
-- `parentPageId`: aus `confluence_parent_page` (falls vorhanden)
-- `body`: Inhalt der erstellten Dokumentation
+- `parentId`: aus Schritt 5a (nur wenn erfolgreich ermittelt)
+- `body`: Inhalt der Dokumentation
+- `contentFormat`: `"markdown"`
 
 Melde nach Erfolg:
 ```
 ✅ Confluence-Seite erstellt: [Seitentitel]
 🔗 Link: [URL zur Seite]
-Space: [SPACE-KEY]
+Space: [SPACE-KEY] (ID: [spaceId])
 ```
 
 **Falls `confluence_space` oder `confluence_title` fehlen:**
@@ -145,6 +198,8 @@ Space: [SPACE-KEY]
   - Confluence Space Key (z.B. "PROJ", "ARCH")
   - Seitentitel
   - (optional) Parent-Seite unter der die Seite angelegt werden soll
+
+Zum Update einer bestehenden Seite: confluence-updater verwenden.
 ```
 
 ---

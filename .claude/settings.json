@@ -16,6 +16,10 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/block-env-bash.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/block-destructive-ops.sh"
           }
         ]
       }

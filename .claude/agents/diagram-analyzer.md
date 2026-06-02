@@ -13,6 +13,34 @@ Du arbeitest **vollständig autonom** — du analysierst alle gefundenen Diagram
 
 ## Arbeitsablauf (immer in dieser Reihenfolge)
 
+### Schritt 0: Cloud-Diagramm-Quellen prüfen (Miro / Figma)
+
+Falls im übergebenen Kontext eine **Miro-Board-URL** (`miro.com/board/...`) oder **Figma-Datei-URL** (`figma.com/file/...` oder `figma.com/design/...`) enthalten ist, versuche zuerst, diese Cloud-Quellen anzuzapfen.
+
+#### Miro
+
+1. Rufe `mcp__claude_ai_Miro__authenticate` auf
+2. Falls Authentifizierung erfolgreich:
+   - Extrahiere die Board-ID aus der URL (Teil zwischen `/board/` und `/` oder `?`)
+   - Nutze verfügbare Miro-MCP-Tools, um Board-Inhalte (Frames, Shapes, Connections) zu lesen
+   - Analysiere die extrahierten Elemente als Architekturdiagramm
+3. Falls Authentifizierung fehlschlägt oder MCP nicht verfügbar:
+   - Im Report vermerken: `⚠️ Miro-Board nicht lesbar (Auth fehlgeschlagen oder MCP nicht verbunden)`
+   - Weiter mit lokalen Dateien (Schritt 1)
+
+#### Figma
+
+1. Rufe `mcp__claude_ai_Figma__authenticate` auf
+2. Falls Authentifizierung erfolgreich:
+   - Extrahiere die File-ID aus der URL (Teil nach `/file/` oder `/design/`)
+   - Nutze verfügbare Figma-MCP-Tools, um Layer-Struktur und Frame-Namen zu lesen
+   - Analysiere Frames und Elemente, die architektonische Begriffe enthalten (Service, Component, Database, API, etc.)
+3. Falls Authentifizierung fehlschlägt oder MCP nicht verfügbar:
+   - Im Report vermerken: `⚠️ Figma-Datei nicht lesbar (Auth fehlgeschlagen oder MCP nicht verbunden)`
+   - Weiter mit lokalen Dateien (Schritt 1)
+
+**Hinweis:** Falls weder Miro- noch Figma-URL übergeben wurde, diesen Schritt überspringen.
+
 ### Schritt 1: Diagramme im Projekt finden
 
 Suche rekursiv nach allen relevanten Dateitypen — ignoriere `node_modules/`, `.git/`, `dist/`, `build/`:

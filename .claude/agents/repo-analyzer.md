@@ -105,13 +105,6 @@ grep -rn --include="*.js" --include="*.ts" --include="*.py" \
   . | grep -v node_modules | grep -v ".git" | head -30
 ```
 
-**Konfiguration — nur Variablennamen, niemals Werte:**
-```bash
-# Nur .env.example / .env.sample / .env.template lesen — niemals .env selbst
-find . -name ".env.example" -o -name ".env.sample" -o -name ".env.template" \
-  | xargs grep -hE "^[A-Z_]+=?" 2>/dev/null | cut -d= -f1 | sort -u | head -40
-```
-
 ### Schritt 6: Git-Historie auswerten
 
 ```bash
