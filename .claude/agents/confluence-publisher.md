@@ -35,17 +35,27 @@ Prüfe, welche Inputs vorhanden sind:
 
 ### Schritt 2: Template laden
 
-Lade das Template:
+Lade **immer zuerst** das kanonische Template mit dem Read-Tool:
 ```
 ~/.claude/templates/confluence-template.md
 ```
 
-Falls die Datei nicht vorhanden ist, nutze dieses Standard-Template:
+Dieses Template ist die **verbindliche Struktur** für jede Confluence-Seite — übernimm seine Überschriften, Felder und Tabellenspalten exakt.
+
+**Falls das Read-Tool die Datei nicht findet:**
+- Brich **nicht** still ab und weiche **nicht** eigenmächtig von der Struktur ab.
+- Vermerke ganz oben in der Vorschau eine sichtbare Warnung:
+  `⚠️ Bitte prüfen: Kanonisches Template (~/.claude/templates/confluence-template.md) nicht gefunden — Notfall-Struktur verwendet. Skill-Setup erneut ausführen.`
+- Nutze als Notfall-Struktur das folgende, **mit dem echten Template synchron gehaltene** Fallback:
 
 ```markdown
+# Solution Design Dokumentation
+
 ## Metadaten
+- **Kunde:**
 - **Projektname:**
 - **Projektlaufzeit:**
+- **Ansprechpartner:**
 - **Technologie:**
 - **Code-/Repo-Link:**
 
@@ -62,13 +72,13 @@ Falls die Datei nicht vorhanden ist, nutze dieses Standard-Template:
 
 ## 3. Systemverbindungen
 ### Überblick
-| Quellsystem | Zielsystem | Verbindung / Schnittstelle | Zweck | Richtung |
+| Quellsystem | Zielsystem | Verbindung / Schnittstelle | Zweck | Richtung | Bemerkungen |
 ### Kommunikationsmuster
 ### Externe Abhängigkeiten
 
 ## 4. Datenschichten
 ### Verarbeitete Daten
-| Datenschicht | Inhalt | Zweck | Quelle | Ziel |
+| Datenschicht / Speicherort | Inhalt / Datentypen | Zweck | Quelle | Ziel | Bemerkungen |
 ### Datenflüsse
 ### Datenschutz / Sicherheit
 
