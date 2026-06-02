@@ -10,8 +10,9 @@
       "version": "0.1.0",
       "description": "Documentation & analysis orchestrator — dokumentiert Projekte nach Confluence und recherchiert Solution Designs",
       "source": {
-        "type": "github",
-        "repo": "lpetersdorf/doc_agent"
+        "source": "url",
+        "url": "https://github.com/lpetersdorf/doc_agent.git",
+        "sha": "0f973cf5b1421efb68e7dfece7d8caed1bad3b06"
       }
     }
   ]
