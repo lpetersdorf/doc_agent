@@ -1,78 +1,133 @@
 # Solution Agent — Maintainer Guide
 
-Dieses Repo ist der **Content-Store** für den shareable Claude Skill `document-project`.  
-Er wird nicht direkt genutzt — der Skill klont/pullt dieses Repo beim ersten Aufruf und kopiert die Bausteine nach `~/.claude/`.
+Dieses Repo ist ein **Claude Code Plugin** mit dem Namen `solution-agent`.  
+Es wird über den Plugin-Mechanismus von Claude Code installiert — kein Bootstrap, kein manuelles Kopieren.
+
+---
+
+## Plugin-Struktur
+
+```
+solution-agent/
+├── .claude-plugin/
+│   ├── plugin.json          ← Manifest (Name, Version, Autor)
+│   └── marketplace.json     ← Distribution via GitHub
+├── skills/
+│   └── document-project/
+│       └── SKILL.md         ← Orchestrierungs-Skill
+├── agents/                  ← Sub-Agenten (auto-discovered)
+│   ├── repo-analyzer.md
+│   ├── diagram-analyzer.md
+│   ├── document-analyzer.md
+│   ├── confluence-publisher.md
+│   ├── confluence-updater.md
+│   ├── doc-reviewer.md
+│   └── solution-researcher.md
+├── commands/                ← Slash-Commands (auto-discovered)
+│   ├── document-status.md
+│   └── document-sync.md
+├── hooks/                   ← Sicherheits-Hooks (auto-discovered)
+│   ├── hooks.json           ← Hook-Registrierung mit ${CLAUDE_PLUGIN_ROOT}
+│   ├── block-env-bash.sh
+│   ├── block-env-read.sh
+│   └── block-destructive-ops.sh
+└── templates/
+    └── confluence-template.md  ← Referenz; Inhalt ist in confluence-publisher.md eingebettet
+```
 
 ---
 
 ## Wie das System funktioniert
 
 ```
-Nutzer tippt /document in Claude Code
+Nutzer tippt /solution-agent:document-project
         │
         ▼
-Skill: document-project (shareable Claude Skill)
-        │  Setup-Check: klont/pullt dieses Repo → ~/.solution_agent
-        │  kopiert: agents/ · hooks/ · templates/ · settings.json → ~/.claude/
+Skill: skills/document-project/SKILL.md
+        │  Orchestriert die Analyse und fragt nach PUSH oder PULL
         ▼
-Claude delegiert an den passenden Sub-Agenten
+Claude delegiert an den passenden Sub-Agenten (agents/)
 ```
 
-**Die Orchestrierungslogik lebt ausschließlich im Skill.** Dieses Repo liefert nur die Bausteine.
+**Claude Code lädt alle Bausteine automatisch** — kein Bootstrap, kein `git clone`, kein Kopieren nach `~/.claude/`.
 
 ---
 
 ## Inventar
 
-### `.claude/agents/` — Sub-Agenten
+### `agents/` — Sub-Agenten
 
 | Datei | Zweck |
 |---|---|
 | `repo-analyzer.md` | Analysiert Git-Repos (lokal oder remote): Architektur, Tech-Stack, APIs, Git-Historie |
 | `diagram-analyzer.md` | Analysiert Diagramme (PNG, JPG, SVG, draw.io, PlantUML, Mermaid) visuell |
 | `document-analyzer.md` | Analysiert Textdokumente (PDF, DOCX, PPTX, TXT, RST, MD in Doku-Ordnern); nutzt pandoc/pdftotext falls installiert |
-| `confluence-publisher.md` | Erstellt und publiziert Confluence-Seiten; nutzt `confluence-template.md` als Grundstruktur |
+| `confluence-publisher.md` | Erstellt und publiziert Confluence-Seiten; Template ist direkt eingebettet |
+| `confluence-updater.md` | Aktualisiert bestehende Confluence-Seiten idempotent |
+| `doc-reviewer.md` | Validiert `dokumentation-preview.md` vor dem Publish |
 | `solution-researcher.md` | Durchsucht Confluence nach Solution-Design-Seiten und liefert strukturierte Antworten |
 
-### `.claude/hooks/` — Sicherheits-Hooks
+### `commands/` — Slash-Commands
 
 | Datei | Zweck |
 |---|---|
+| `document-status.md` | Zeigt Analyse-Artefakte im aktuellen Verzeichnis |
+| `document-sync.md` | Aktualisiert bestehende Confluence-Seite (delegiert an `confluence-updater`) |
+
+### `hooks/` — Sicherheits-Hooks
+
+| Datei | Zweck |
+|---|---|
+| `hooks.json` | Registriert Hooks via `PreToolUse`; nutzt `${CLAUDE_PLUGIN_ROOT}` für Pfade |
 | `block-env-bash.sh` | Blockiert Bash-Befehle, die `.env`-Dateien lesen würden |
 | `block-env-read.sh` | Blockiert Read-Tool-Zugriff auf `.env`-Dateien |
+| `block-destructive-ops.sh` | Blockiert `git push` und Destruktiv-Operationen in Analyse-Repos |
 
-Hooks werden via `PreToolUse` in `settings.json` registriert. Pfade sind absolut (`$HOME/.claude/hooks/…`).
-
-### `.claude/templates/`
+### `templates/`
 
 | Datei | Zweck |
 |---|---|
-| `confluence-template.md` | Seitenstruktur-Vorlage für den `confluence-publisher` |
+| `confluence-template.md` | Referenz-Template — Inhalt ist direkt in `agents/confluence-publisher.md` eingebettet |
+
+> **Wichtig:** Bei Template-Änderungen muss der eingebettete Block am Ende von `agents/confluence-publisher.md` synchron gehalten werden.
 
 ---
 
 ## Wartungsregeln
 
 ### Neuen Sub-Agenten hinzufügen
-1. Agenten-Datei unter `.claude/agents/<name>.md` anlegen (Frontmatter: `name`, `description`)
+1. Agenten-Datei unter `agents/<name>.md` anlegen (Frontmatter: `name`, `description`)
 2. Im Skill **Routing-Tabelle + Agentenliste aktualisieren** — sonst wird der Agent nie aufgerufen
 3. Hier in der Tabelle oben eintragen
 
-### Agenten oder Template ändern
-Datei bearbeiten und committen → beim nächsten `/document`-Aufruf zieht der Skill die neue Version via `git pull`.
+### Agenten oder SKILL.md ändern
+Datei bearbeiten und committen → Claude Code lädt die neue Version beim nächsten Plugin-Update.
 
-### Settings/Hooks ändern
-`settings.json` wird vom Skill **nur kopiert, wenn `~/.claude/settings.json` noch nicht existiert**.  
-Änderungen an Hooks greifen bei bestehenden Installationen erst nach manuellem Merge.  
-Langfristig sollte der Skill-Bootstrap ein Merge statt Copy-if-absent implementieren.
+### Template ändern
+1. `templates/confluence-template.md` bearbeiten
+2. Den eingebetteten Template-Block am Ende von `agents/confluence-publisher.md` synchron halten
+
+### Hooks ändern
+`hooks/hooks.json` und die zugehörigen `.sh`-Dateien bearbeiten.  
+`${CLAUDE_PLUGIN_ROOT}` zeigt zur Plugin-Installation — nie absolute `$HOME/.claude/`-Pfade verwenden.
 
 ---
+
+## Installation
+
+```bash
+# Marketplace hinzufügen (einmalig)
+/plugin marketplace add lpetersdorf/doc_agent
+
+# Plugin installieren
+/plugin install solution-agent
+```
 
 ## Zwei Nutzungs-Pfade
 
 ```
-/document  →  PUSH: lokales Projekt (cwd) oder Remote-Repo dokumentieren → Confluence
-/document  →  PULL: aus Confluence recherchieren (solution-researcher)
+/solution-agent:document-project  →  PUSH: lokales Projekt (cwd) oder Remote-Repo → Confluence
+/solution-agent:document-project  →  PULL: aus Confluence recherchieren (solution-researcher)
 ```
 
 Beim Aufruf ohne Argument fragt der Skill explizit nach dem gewünschten Pfad.  

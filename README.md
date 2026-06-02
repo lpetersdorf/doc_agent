@@ -1,18 +1,23 @@
 # Solution Agent
 
-A Claude Code skill for documenting projects and researching Confluence Solution Designs.
+A Claude Code **plugin** for documenting projects and researching Confluence Solution Designs.
 
 ## Installation
 
-Add the shareable skill `document-project` to your Claude Code instance.  
-On first use, the skill automatically installs all sub-agents, hooks, and templates.
+```bash
+# Add the marketplace (once)
+/plugin marketplace add lpetersdorf/doc_agent
+
+# Install the plugin
+/plugin install solution-agent
+```
 
 ## Usage
 
 Open Claude Code in any project and type:
 
 ```
-/document
+/solution-agent:document-project
 ```
 
 Without arguments the skill asks which path you want:
@@ -23,8 +28,8 @@ Without arguments the skill asks which path you want:
 You can also pass your request directly:
 
 ```
-/document analysiere das Repo github.com/… und erstell eine Confluence-Seite
-/document was steht im Solution Design zum Payment Service?
+/solution-agent:document-project analysiere das Repo github.com/… und erstell eine Confluence-Seite
+/solution-agent:document-project was steht im Solution Design zum Payment Service?
 ```
 
 ## What it does
@@ -45,5 +50,5 @@ You can also pass your request directly:
 
 ## This repository
 
-This repo is the **content store** for the skill — it holds sub-agents, hooks, and templates.  
-The skill clones/pulls it automatically on setup. See [CLAUDE.md](CLAUDE.md) for the maintainer guide.
+This repo is the **Claude Code plugin** — it holds the skill, sub-agents, hooks, and templates.  
+Claude Code loads everything automatically on plugin install. See [CLAUDE.md](CLAUDE.md) for the maintainer guide.

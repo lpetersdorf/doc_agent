@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    {
+      "name": "solution-agent",
+      "version": "0.1.0",
+      "description": "Documentation & analysis orchestrator — dokumentiert Projekte nach Confluence und recherchiert Solution Designs",
+      "source": {
+        "type": "github",
+        "repo": "lpetersdorf/doc_agent"
+      }
+    }
+  ]
+}

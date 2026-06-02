@@ -1,0 +1,11 @@
+{
+  "name": "solution-agent",
+  "version": "0.1.0",
+  "description": "Documentation & analysis orchestrator — dokumentiert Projekte nach Confluence und recherchiert Solution Designs",
+  "displayName": "Solution Agent",
+  "author": {
+    "name": "Lukas Petersdorf",
+    "email": "lukas.petersdorf@blueforte.com"
+  },
+  "repository": "https://github.com/lpetersdorf/doc_agent"
+}

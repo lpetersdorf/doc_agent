@@ -57,3 +57,4 @@ Nächste Schritte:
 | Preview vorhanden, frisch (< 1 Tag) | Bereit für `/document-sync` oder Confluence-Publish |
 | Preview vorhanden, älter als 7 Tage | Erwäge eine neue Analyse mit `/document` |
 | Offene Prüfpunkte > 0 | Preview vor Publish manuell prüfen oder `doc-reviewer`-Agent starten |
+#+

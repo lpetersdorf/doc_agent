@@ -33,62 +33,9 @@ Prüfe, welche Inputs vorhanden sind:
    - `confluence_title` (Seitentitel)
    - Falls nicht übergeben: aus Projektname ableiten und als `⚠️ Bitte prüfen:` markieren
 
-### Schritt 2: Template laden
+### Schritt 2: Template verwenden
 
-Lade **immer zuerst** das kanonische Template mit dem Read-Tool:
-```
-~/.claude/templates/confluence-template.md
-```
-
-Dieses Template ist die **verbindliche Struktur** für jede Confluence-Seite — übernimm seine Überschriften, Felder und Tabellenspalten exakt.
-
-**Falls das Read-Tool die Datei nicht findet:**
-- Brich **nicht** still ab und weiche **nicht** eigenmächtig von der Struktur ab.
-- Vermerke ganz oben in der Vorschau eine sichtbare Warnung:
-  `⚠️ Bitte prüfen: Kanonisches Template (~/.claude/templates/confluence-template.md) nicht gefunden — Notfall-Struktur verwendet. Skill-Setup erneut ausführen.`
-- Nutze als Notfall-Struktur das folgende, **mit dem echten Template synchron gehaltene** Fallback:
-
-```markdown
-# Solution Design Dokumentation
-
-## Metadaten
-- **Kunde:**
-- **Projektname:**
-- **Projektlaufzeit:**
-- **Ansprechpartner:**
-- **Technologie:**
-- **Code-/Repo-Link:**
-
-## 1. Beschreibung
-### Ziel des Projekts
-### Ausgangssituation
-### Zielbild / Soll-Zustand
-### Umfang
-
-## 2. Eingesetzte Komponenten
-### Hauptkomponenten
-| Komponente | Typ | Zweck | Technologie | Bemerkungen |
-### Infrastruktur / Plattform
-
-## 3. Systemverbindungen
-### Überblick
-| Quellsystem | Zielsystem | Verbindung / Schnittstelle | Zweck | Richtung | Bemerkungen |
-### Kommunikationsmuster
-### Externe Abhängigkeiten
-
-## 4. Datenschichten
-### Verarbeitete Daten
-| Datenschicht / Speicherort | Inhalt / Datentypen | Zweck | Quelle | Ziel | Bemerkungen |
-### Datenflüsse
-### Datenschutz / Sicherheit
-
-## 5. Lessons Learned
-### Was gut funktioniert hat
-### Herausforderungen
-### Empfehlungen für Folgeprojekte
-
-## Offene Punkte
-```
+Das kanonische Template ist direkt in diesem Agenten eingebettet (siehe Abschnitt **Kanonisches Template** am Ende dieser Datei). Nutze es als **verbindliche Struktur** für jede Confluence-Seite — übernimm seine Überschriften, Felder und Tabellenspalten exakt.
 
 ### Schritt 3: Dokumentation erstellen
 
@@ -210,5 +157,108 @@ Zum Update einer bestehenden Seite: confluence-updater verwenden.
 - **Immer** lokale Vorschau (`dokumentation-preview.md`) erstellen, bevor Confluence-Upload
 - **Niemals** andere Sub-Agenten (`repo-analyzer`, `diagram-analyzer`) aufrufen — diese laufen vorgelagert
 - **Niemals** `.env`-Dateien lesen — nur `.env.example`, `.env.sample`, `.env.template`
-- Template immer von `~/.claude/templates/confluence-template.md` laden (nicht von einem relativen Pfad)
 - Unklare Stellen immer mit `⚠️ Bitte prüfen:` markieren statt zu erfinden
+
+---
+
+## Kanonisches Template
+
+```markdown
+# Solution Design Dokumentation
+
+## Metadaten
+
+- **Kunde:** 
+- **Projektname:** 
+- **Projektlaufzeit:** 
+- **Ansprechpartner:** 
+- **Technologie:** 
+- **Code-/Repo-Link:** 
+
+---
+
+## 1. Beschreibung
+
+### Ziel des Projekts
+<!-- Kurze Beschreibung des Geschäftsziels und des fachlichen Nutzens -->
+
+### Ausgangssituation
+<!-- Kontext, Problemstellung, Ist-Zustand -->
+
+### Zielbild / Soll-Zustand
+<!-- Was soll durch die Lösung erreicht werden? -->
+
+### Umfang
+<!-- Was ist Bestandteil des Projekts, was nicht? -->
+
+---
+
+## 2. Eingesetzte Komponenten
+
+### Hauptkomponenten
+<!-- Liste der verwendeten Systeme, Services, Module, Libraries oder Plattformen -->
+
+| Komponente | Typ | Zweck | Technologie | Bemerkungen |
+|---|---|---|---|---|
+|  |  |  |  |  |
+
+### Infrastruktur / Plattform
+<!-- Hosting, Cloud, On-Prem, Container, CI/CD, Datenbanken, Messaging etc. -->
+
+---
+
+## 3. Systemverbindungen
+
+### Überblick
+<!-- Beschreibung der wichtigsten Schnittstellen und Systeminteraktionen -->
+
+| Quellsystem | Zielsystem | Verbindung / Schnittstelle | Zweck | Richtung | Bemerkungen |
+|---|---|---|---|---|---|
+|  |  |  |  |  |  |
+
+### Kommunikationsmuster
+<!-- z. B. synchron, asynchron, Event-basiert, Batch -->
+
+### Externe Abhängigkeiten
+<!-- Drittanbieter, externe APIs, andere Teams/Systeme -->
+
+---
+
+## 4. Datenschichten
+
+### Verarbeitete Daten
+<!-- Welche Datenarten oder Domänenobjekte werden verarbeitet? -->
+
+| Datenschicht / Speicherort | Inhalt / Datentypen | Zweck | Quelle | Ziel | Bemerkungen |
+|---|---|---|---|---|---|
+|  |  |  |  |  |  |
+
+### Datenflüsse
+<!-- Beschreibung, wie Daten durch das System laufen -->
+
+### Datenschutz / Sicherheit
+<!-- Relevante Anforderungen, z. B. personenbezogene Daten, Schutzbedarf, Zugriffskonzepte -->
+
+---
+
+## 5. Lessons Learned
+
+### Was gut funktioniert hat
+<!-- Positive Erkenntnisse -->
+
+### Herausforderungen
+<!-- Probleme, Risiken, Engpässe -->
+
+### Empfehlungen für Folgeprojekte
+<!-- Konkrete Verbesserungsvorschläge -->
+
+---
+
+## Offene Punkte
+
+<!-- Alle derzeit fehlenden, unklaren oder noch zu bestätigenden Informationen -->
+
+- 
+
+---
+```
