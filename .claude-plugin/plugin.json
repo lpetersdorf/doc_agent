@@ -1,8 +1,11 @@
 {
   "name": "solution-agent",
   "version": "0.1.0",
-  "description": "Documentation & analysis orchestrator — dokumentiert Projekte nach Confluence und recherchiert Solution Designs",
   "displayName": "Solution Agent",
+  "description": "Documentation & analysis orchestrator — dokumentiert Projekte nach Confluence und recherchiert Solution Designs",
+  "keywords": ["confluence", "documentation", "architecture", "solution-design", "analysis"],
+  "homepage": "https://github.com/lpetersdorf/doc_agent",
+  "license": "MIT",
   "author": {
     "name": "Lukas Petersdorf",
     "email": "lukas.petersdorf@blueforte.com"

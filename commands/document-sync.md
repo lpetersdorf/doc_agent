@@ -17,7 +17,7 @@ head -5 dokumentation-preview.md | grep "^# " | head -1 | sed 's/^# //'
 ```
 
 Falls `dokumentation-preview.md` fehlt:
-> "Keine `dokumentation-preview.md` gefunden. Führe zuerst `/document` aus, um eine Analyse und Vorschau zu erstellen."
+> "Keine `dokumentation-preview.md` gefunden. Führe zuerst `/solution-agent:document-project` aus, um eine Analyse und Vorschau zu erstellen."
 
 ### Schritt 2: Confluence-Zieldaten klären
 

@@ -113,19 +113,43 @@ Falls der Nutzer eine Confluence-Seite erstellen möchte (nicht nur analysieren)
 
 Warte auf die Antwort, bevor du Sub-Agenten startest.
 
-### Schritt P3: Analysephase — passende Agenten starten
+### Schritt P3: Analysephase — Quelle erkennen und passende Agenten starten
 
-Prüfe die Quelle:
+Führe diese Erkennung im Quellverzeichnis aus (lokaler Pfad oder geklontes Repo):
+
+```bash
+# Hat Code / Git?
+HAS_CODE=$(find <QUELLPFAD> -not -path '*/.git/*' -not -path '*/node_modules/*' \
+  -maxdepth 3 -name ".git" -o -name "package.json" -o -name "requirements.txt" \
+  -o -name "go.mod" -o -name "pom.xml" -o -name "Cargo.toml" -o -name "*.csproj" \
+  2>/dev/null | head -1)
+
+# Hat Bilddateien / Diagramme?
+HAS_DIAGRAMS=$(find <QUELLPFAD> -not -path '*/.git/*' -not -path '*/node_modules/*' \
+  -not -path '*/dist/*' -not -path '*/build/*' -maxdepth 5 \
+  \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.svg" -o -iname "*.drawio" \
+     -o -iname "*.puml" -o -iname "*.mmd" \) 2>/dev/null | head -1)
+
+# Hat Prosa-Dokumente?
+HAS_DOCS=$(find <QUELLPFAD> -not -path '*/.git/*' -not -path '*/node_modules/*' \
+  -maxdepth 5 \( -iname "*.pdf" -o -iname "*.docx" -o -iname "*.pptx" \
+     -o -iname "*.txt" -o -iname "*.rst" \
+     -o \( -iname "*.md" \( -path "*/docs/*" -o -path "*/spec/*" \
+            -o -path "*/notes/*" -o -path "*/requirements/*" -o -path "*/adr/*" \) \) \) \
+  2>/dev/null | head -1)
+```
+
+Wähle anhand der Ergebnisse (nicht-leer = vorhanden):
 
 | Bedingung | Starte |
 |---|---|
-| Quelle enthält Code/Git **und** Bilddateien **und** Dokumente | `repo-analyzer` + `diagram-analyzer` + `document-analyzer` **parallel** |
-| Quelle enthält Code/Git **und** Bilddateien | `repo-analyzer` **und** `diagram-analyzer` **parallel** |
-| Quelle enthält Code/Git **und** Dokumente | `repo-analyzer` **und** `document-analyzer` **parallel** |
-| Quelle enthält Code/Git, keine Bilder, keine Dokumente | `repo-analyzer` |
-| Quelle enthält nur Bilddateien | `diagram-analyzer` |
-| Quelle enthält nur Dokumente (*.docx, *.pdf, *.pptx, *.txt, *.rst) | `document-analyzer` |
-| Weder Code noch Bilder noch Dokumente erkennbar | Direkt zu Schritt P4 |
+| `HAS_CODE` **und** `HAS_DIAGRAMS` **und** `HAS_DOCS` gesetzt | `repo-analyzer` + `diagram-analyzer` + `document-analyzer` **parallel** |
+| `HAS_CODE` **und** `HAS_DIAGRAMS` gesetzt | `repo-analyzer` + `diagram-analyzer` **parallel** |
+| `HAS_CODE` **und** `HAS_DOCS` gesetzt | `repo-analyzer` + `document-analyzer` **parallel** |
+| Nur `HAS_CODE` gesetzt | `repo-analyzer` |
+| Nur `HAS_DIAGRAMS` gesetzt | `diagram-analyzer` |
+| Nur `HAS_DOCS` gesetzt | `document-analyzer` |
+| Nichts erkannt | Direkt zu Schritt P4 |
 
 **Dokumente** im Sinne dieser Tabelle: `.docx`, `.doc`, `.pptx`, `.ppt`, `.odt`, `.odp`, `.pdf`, `.txt`, `.rst`, sowie `.md`-Dateien in `docs/`, `notes/`, `spec/`, `requirements/`, `adr/`.
 
@@ -166,7 +190,7 @@ Analysiert Prosa-Dokumente im Projekt: `.docx`, `.pdf`, `.pptx`, `.odt`, `.txt`,
 Erstellt strukturierte Confluence-Dokumentation auf Basis von `repo-analysis.md`, `diagram-analysis.md` und/oder `document-analysis.md`. Speichert immer eine lokale Vorschau als `dokumentation-preview.md`. Führt vor dem Publish einen Qualitäts-Check durch (Secrets, offene Prüfpunkte). Veröffentlicht in Confluence **nur wenn** `confluence_space` und `confluence_title` im Kontext vorhanden sind — stets als **Neu-Erstellung**.
 
 ### `confluence-updater`
-Aktualisiert eine **bestehende** Confluence-Seite idempotent — verhindert Duplikate bei wiederholter Dokumentation. Sucht die Seite per CQL (Titel + Space), führt ein Update durch; legt neu an, falls die Seite noch nicht existiert. Verwendet `dokumentation-preview.md` als Quelle. Nutzen: bei `/document-sync` oder wenn eine Seite bereits erstellt wurde.
+Aktualisiert eine **bestehende** Confluence-Seite idempotent — verhindert Duplikate bei wiederholter Dokumentation. Sucht die Seite per CQL (Titel + Space), führt ein Update durch; legt neu an, falls die Seite noch nicht existiert. Verwendet `dokumentation-preview.md` als Quelle. Nutzen: bei `/solution-agent:document-sync` oder wenn eine Seite bereits erstellt wurde.
 
 ### `doc-reviewer`
 Qualitäts-Validator für `dokumentation-preview.md`. Prüft auf offene `⚠️ Bitte prüfen:`-Marker, leere Abschnitte, fehlende Pflichtfelder und mögliche Secrets. Gibt eine klare Empfehlung aus: `🟢 GO`, `🟡 WARN` oder `🔴 STOP`. Ändert **nichts** — ausschließlich lesend. Kann vor jedem Confluence-Publish explizit aufgerufen werden.
@@ -192,7 +216,7 @@ Durchsucht Confluence nach Solution-Design-Seiten und liefert strukturierte Antw
 | "Vollständige Doku inkl. Spezifikationen/Dokumente" | PUSH → repo-analyzer + diagram-analyzer + document-analyzer (parallel) → confluence-publisher |
 | "Analysiere die Dokumente / Spezifikationen" | PUSH → nur document-analyzer |
 | "Prüf die Dokumentation vor dem Publish" | PUSH → doc-reviewer |
-| "Update / Sync Confluence-Seite" / `/document-sync` | PUSH → confluence-updater (Update bestehender Seite) |
+| "Update / Sync Confluence-Seite" / `/solution-agent:document-sync` | PUSH → confluence-updater (Update bestehender Seite) |
 | "Was steht im Solution Design zu X?" | PULL → solution-researcher |
 | "Welche Architekturentscheidungen für X?" | PULL → solution-researcher |
 

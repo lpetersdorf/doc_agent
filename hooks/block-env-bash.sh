@@ -3,7 +3,11 @@
 # Allows .env.example / .env.sample / .env.template / .env.dist (safe variants).
 
 input=$(cat)
-cmd=$(echo "$input" | python3 -c "import sys, json; print(json.load(sys.stdin).get('tool_input', {}).get('command', ''))")
+if command -v jq >/dev/null 2>&1; then
+  cmd=$(echo "$input" | jq -r '.tool_input.command // ""')
+else
+  cmd=$(echo "$input" | python3 -c "import sys, json; print(json.load(sys.stdin).get('tool_input', {}).get('command', ''))" 2>/dev/null || echo "")
+fi
 
 # Block .env files — but allow known-safe example/template variants
 if echo "$cmd" | grep -qE '\.env'; then
@@ -14,13 +18,13 @@ if echo "$cmd" | grep -qE '\.env'; then
 fi
 
 # Block private key and certificate files
-if echo "$cmd" | grep -qE '\.(pem|key|p12|pfx|keystore|jks)([[:space:]"'"'"'`]|$)'; then
+if echo "$cmd" | grep -qE '\.(pem|key|p12|pfx|keystore|jks)([[:space:]]"'"'"'`]|$)'; then
   echo "Blockiert: Zugriff auf Zertifikat- und Schluessel-Dateien ist nicht erlaubt."
   exit 2
 fi
 
 # Block SSH private keys
-if echo "$cmd" | grep -qE '(id_rsa|id_dsa|id_ed25519|id_ecdsa)([[:space:]"'"'"'`]|$)'; then
+if echo "$cmd" | grep -qE '(id_rsa|id_dsa|id_ed25519|id_ecdsa)([[:space:]]"'"'"'`]|$)'; then
   echo "Blockiert: Zugriff auf SSH-Schluessel-Dateien ist nicht erlaubt."
   exit 2
 fi
@@ -32,7 +36,7 @@ if echo "$cmd" | grep -qE '(\.aws/credentials|credentials\.json|service_account\
 fi
 
 # Block package registry credential files
-if echo "$cmd" | grep -qE '\.(npmrc|pypirc)([[:space:]"'"'"'`]|$)'; then
+if echo "$cmd" | grep -qE '\.(npmrc|pypirc)([[:space:]]"'"'"'`]|$)'; then
   echo "Blockiert: Zugriff auf Package-Registry-Credentials ist nicht erlaubt."
   exit 2
 fi

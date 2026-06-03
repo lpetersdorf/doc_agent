@@ -27,7 +27,7 @@ Prüfe, welche Inputs vorhanden sind:
    - Identifiziere: Projekttyp, Technologien, Abhängigkeiten, Struktur
    - Ignoriere: `node_modules/`, `.git/`, `__pycache__/`, `dist/`, `build/`
 
-4. **Confluence-Zielinformationen aus dem Kontext extrahieren** (vom Orchestrator übergeben):
+5. **Confluence-Zielinformationen aus dem Kontext extrahieren** (vom Orchestrator übergeben):
    - `confluence_space` (Space Key, z.B. `PROJ`)
    - `confluence_parent_page` (optional)
    - `confluence_title` (Seitentitel)
@@ -76,7 +76,7 @@ Bevor du in Confluence veröffentlichst, prüfe die Vorschau auf Qualitätsprobl
 grep -c "Bitte pruefen\|Bitte prüfen" dokumentation-preview.md 2>/dev/null || echo "0"
 
 # Mögliche Secrets scannen — NUR Anzahl ausgeben, keine Werte
-grep -ciE "(password|secret|api.?key|token|private.?key)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{16,}" \
+grep -ciE "(password|passwd|secret|api.?key|token|private.?key|access.?key)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{16,}" \
   dokumentation-preview.md 2>/dev/null || echo "0"
 ```
 
@@ -158,6 +158,7 @@ Zum Update einer bestehenden Seite: confluence-updater verwenden.
 - **Niemals** andere Sub-Agenten (`repo-analyzer`, `diagram-analyzer`) aufrufen — diese laufen vorgelagert
 - **Niemals** `.env`-Dateien lesen — nur `.env.example`, `.env.sample`, `.env.template`
 - Unklare Stellen immer mit `⚠️ Bitte prüfen:` markieren statt zu erfinden
+- **Hinweis Mermaid:** Mermaid-Codeblöcke werden in Confluence mit `contentFormat: markdown` als Rohtext dargestellt — nicht gerendert. Diagramme aus `diagram-analysis.md` als Tabellen übernehmen (bereits so modelliert); auf Mermaid-Blöcke in der Dokumentation verzichten.
 
 ---
 

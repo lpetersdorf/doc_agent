@@ -19,7 +19,7 @@ Prüfe, welche Inputs vorhanden sind:
 
 **Neue Dokumentation (Analyseoutput):**
 1. `dokumentation-preview.md` vorhanden? → Lese den Inhalt mit dem Read-Tool
-2. Falls nicht vorhanden: Abbruch mit Hinweis — "Keine `dokumentation-preview.md` gefunden. Bitte zuerst `/document` ausführen."
+2. Falls nicht vorhanden: Abbruch mit Hinweis — "Keine `dokumentation-preview.md` gefunden. Bitte zuerst `/solution-agent:document-project` ausführen."
 
 **Confluence-Zielinformationen aus dem Kontext:**
 - `confluence_space` (Space Key, z.B. `PROJ`)

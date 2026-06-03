@@ -132,3 +132,29 @@ Datei bearbeiten und committen → Claude Code lädt die neue Version beim näch
 
 Beim Aufruf ohne Argument fragt der Skill explizit nach dem gewünschten Pfad.  
 Lokaler Ordner (cwd) ist der Standard-Quellpfad für PUSH.
+
+---
+
+## Release-Prozess (Marketplace-SHA aktualisieren)
+
+Nach jedem Commit der in die Produktion soll, muss die SHA in `.claude-plugin/marketplace.json` manuell auf den neuen Commit-Hash gesetzt werden. Nutzer, die das Plugin installiert haben, erhalten den neuen Stand erst nach `/plugin update solution-agent`.
+
+**Schritt-für-Schritt:**
+
+```bash
+# 1. Änderungen committen und pushen
+git push origin main
+
+# 2. Neuen Commit-Hash ermitteln
+git rev-parse HEAD
+
+# 3. SHA in marketplace.json aktualisieren
+# → .claude-plugin/marketplace.json → "sha": "<neuer-hash>"
+
+# 4. SHA-Update committen
+git add .claude-plugin/marketplace.json
+git commit -m "chore: bump marketplace sha to <kurz-hash>"
+git push origin main
+```
+
+> **Langfristig:** Alternativ eine Tag-Referenz (`"ref": "v0.2.0"`) statt Commit-SHA erwägen, sobald das Plugin-Format das unterstützt — dann entfällt das manuelle Bumpen.

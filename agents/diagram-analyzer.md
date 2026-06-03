@@ -179,7 +179,6 @@ Speichere den Gesamt-Report als `diagram-analysis.md` im aktuellen Verzeichnis:
 
 ## Wichtige Regeln
 
-- Verwende `model: opus` — Bildanalyse erfordert maximale multimodale Kompetenz
 - Bei unklaren oder schlecht lesbaren Diagrammen: Unsicherheit explizit als `⚠️ Bitte prüfen:` kennzeichnen
 - Keine Annahmen über Technologien machen, die nicht im Diagramm sichtbar oder beschriftet sind
 - Screenshots von UIs oder Logos **nicht** als Architekturdiagramme behandeln — überspringen und im Report erwähnen

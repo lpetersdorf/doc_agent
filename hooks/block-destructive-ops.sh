@@ -1,20 +1,24 @@
 #!/bin/bash
 # Blocks destructive git operations and build commands within cloned analysis repos.
-# Applies only when commands target /tmp/repo-analyzer-* directories.
-# git push is blocked globally — analysis agents must never push to remotes.
+# git push is blocked only inside /tmp/repo-analyzer-* — analysis agents must never push to remotes.
+# All other destructive checks also apply only within those directories.
 
 input=$(cat)
-cmd=$(echo "$input" | python3 -c "import sys, json; print(json.load(sys.stdin).get('tool_input', {}).get('command', ''))")
+if command -v jq >/dev/null 2>&1; then
+  cmd=$(echo "$input" | jq -r '.tool_input.command // ""')
+else
+  cmd=$(echo "$input" | python3 -c "import sys, json; print(json.load(sys.stdin).get('tool_input', {}).get('command', ''))" 2>/dev/null || echo "")
+fi
 
-# Block git push globally — analysis workflows never push
+# All checks apply only when targeting cloned repo directories
+if ! echo "$cmd" | grep -qE '/tmp/repo-analyzer-'; then
+  exit 0
+fi
+
+# Block git push inside cloned repos — analysis workflows never push
 if echo "$cmd" | grep -qE '\bgit\b.*\bpush\b'; then
   echo "Blockiert: git push ist in Analyse-Workflows nicht erlaubt."
   exit 2
-fi
-
-# All remaining checks apply only when targeting cloned repo directories
-if ! echo "$cmd" | grep -qE '/tmp/repo-analyzer-'; then
-  exit 0
 fi
 
 # Block build and install commands inside cloned repos

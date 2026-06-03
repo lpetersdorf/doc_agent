@@ -52,9 +52,8 @@ Nächste Schritte:
 
 | Situation | Empfehlung |
 |---|---|
-| Keine Dateien vorhanden | Führe `/document` aus, um die Dokumentation zu starten |
-| Nur Analyse-Reports, keine Preview | Führe `/document` aus — die Preview fehlt noch |
-| Preview vorhanden, frisch (< 1 Tag) | Bereit für `/document-sync` oder Confluence-Publish |
-| Preview vorhanden, älter als 7 Tage | Erwäge eine neue Analyse mit `/document` |
+| Keine Dateien vorhanden | Führe `/solution-agent:document-project` aus, um die Dokumentation zu starten |
+| Nur Analyse-Reports, keine Preview | Führe `/solution-agent:document-project` aus — die Preview fehlt noch |
+| Preview vorhanden, frisch (< 1 Tag) | Bereit für `/solution-agent:document-sync` oder Confluence-Publish |
+| Preview vorhanden, älter als 7 Tage | Erwäge eine neue Analyse mit `/solution-agent:document-project` |
 | Offene Prüfpunkte > 0 | Preview vor Publish manuell prüfen oder `doc-reviewer`-Agent starten |
-#+
