@@ -12,9 +12,13 @@ solution-agent/
 ├── .claude-plugin/
 │   ├── plugin.json          ← Manifest (Name, Version, Autor)
 │   └── marketplace.json     ← Distribution via GitHub
-├── skills/
-│   └── document-project/
-│       └── SKILL.md         ← Orchestrierungs-Skill
+├── skills/                  ← Skills (auto-discovered)
+│   ├── document-project/
+│   │   └── SKILL.md         ← Orchestrierungs-Skill
+│   ├── document-status/
+│   │   └── SKILL.md         ← Dokumentations-Status anzeigen
+│   └── document-sync/
+│       └── SKILL.md         ← Bestehende Confluence-Seite aktualisieren
 ├── agents/                  ← Sub-Agenten (auto-discovered)
 │   ├── repo-analyzer.md
 │   ├── diagram-analyzer.md
@@ -23,9 +27,6 @@ solution-agent/
 │   ├── confluence-updater.md
 │   ├── doc-reviewer.md
 │   └── solution-researcher.md
-├── commands/                ← Slash-Commands (auto-discovered)
-│   ├── document-status.md
-│   └── document-sync.md
 ├── hooks/                   ← Sicherheits-Hooks (auto-discovered)
 │   ├── hooks.json           ← Hook-Registrierung mit ${CLAUDE_PLUGIN_ROOT}
 │   ├── block-env-bash.sh
@@ -67,12 +68,13 @@ Claude delegiert an den passenden Sub-Agenten (agents/)
 | `doc-reviewer.md` | Validiert `dokumentation-preview.md` vor dem Publish |
 | `solution-researcher.md` | Durchsucht Confluence nach Solution-Design-Seiten und liefert strukturierte Antworten |
 
-### `commands/` — Slash-Commands
+### `skills/` — Skills
 
 | Datei | Zweck |
 |---|---|
-| `document-status.md` | Zeigt Analyse-Artefakte im aktuellen Verzeichnis |
-| `document-sync.md` | Aktualisiert bestehende Confluence-Seite (delegiert an `confluence-updater`) |
+| `document-project/SKILL.md` | Orchestriert Analyse und Confluence-Dokumentation (PUSH) oder Confluence-Recherche (PULL) |
+| `document-status/SKILL.md` | Zeigt Analyse-Artefakte im aktuellen Verzeichnis |
+| `document-sync/SKILL.md` | Aktualisiert bestehende Confluence-Seite (delegiert an `confluence-updater`) |
 
 ### `hooks/` — Sicherheits-Hooks
 

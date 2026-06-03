@@ -1,4 +1,5 @@
 ---
+name: document-status
 description: "Zeigt vorhandene Analyse-Artefakte und Dokumentations-Vorschau im aktuellen Verzeichnis"
 ---
 

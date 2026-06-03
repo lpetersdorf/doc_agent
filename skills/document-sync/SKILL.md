@@ -1,8 +1,9 @@
 ---
+name: document-sync
 description: "Aktualisiert eine bestehende Confluence-Seite mit der vorhandenen dokumentation-preview.md — ohne Duplikat zu erstellen"
 ---
 
-Dieser Command aktualisiert eine bestehende Confluence-Seite idempotent. Er liest die vorhandene `dokumentation-preview.md` und delegiert an den `confluence-updater`-Agenten.
+Dieser Skill aktualisiert eine bestehende Confluence-Seite idempotent. Er liest die vorhandene `dokumentation-preview.md` und delegiert an den `confluence-updater`-Agenten.
 
 ## Ablauf
 
