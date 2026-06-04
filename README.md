@@ -48,6 +48,12 @@ You can also pass your request directly:
 - [Claude Code](https://claude.ai/code) installed
 - Atlassian MCP server connected (for Confluence publishing)
 
+**Optional tools** (for analysing Office/PDF documents):
+```bash
+brew install pandoc poppler
+```
+Without these, `.docx`, `.pptx`, and `.pdf` files are skipped during document analysis. All other features work without them.
+
 ## This repository
 
 This repo is the **Claude Code plugin** — it holds the skill, sub-agents, hooks, and templates.  

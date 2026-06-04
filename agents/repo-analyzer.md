@@ -122,7 +122,7 @@ git log --format="%ad" --date=short | head -1   # neuester Commit
 git branch -a | head -20
 ```
 
-> Hinweis: Bei Remote-Repos mit `--filter=blob:none` ist die vollständige Historie verfügbar. Falls der Startpunkt unklar ist, als `⚠️ Bitte prüfen:` markieren.
+> Hinweis: `--filter=blob:none` liefert die vollständige Commit-Historie (kein Shallow-Clone). Falls der Startpunkt trotzdem unklar ist, als `⚠️ Bitte prüfen:` markieren.
 
 ### Schritt 7: Analyse-Report erstellen
 
@@ -175,7 +175,7 @@ Erstelle den Report und speichere ihn als `repo-analysis.md` im **aktuellen Arbe
 <Relevante Umgebungsvariablen (nur Namen, keine Werte)>
 
 ## Git-Historie (Zusammenfassung)
-- **Projektlaufzeit:** <ältester bis neuester Commit — ⚠️ Bitte prüfen falls aus Shallow-Clone>
+- **Projektlaufzeit:** <ältester bis neuester Commit>
 - **Aktive Contributor:** <Anzahl>
 - **Letzte Änderungen:** <Zusammenfassung der letzten 20 Commits>
 

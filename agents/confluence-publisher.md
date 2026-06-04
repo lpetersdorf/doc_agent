@@ -104,6 +104,7 @@ Falls confluence_parent_page ein Seitentitel (String) ist:
   Rufe `mcp__claude_ai_Atlassian__searchConfluenceUsingCql` auf:
     - cloudId: <aus Schritt 1>
     - cql: title = "<confluence_parent_page>" AND space.key = "<confluence_space>" AND type = page
+  Hinweis: Enthält der Titel `"`, diese escapen oder einfache Anführungszeichen verwenden: title = '<confluence_parent_page>'
   → Extrahiere id des ersten Ergebnisses als parentId.
   Falls kein Ergebnis: parentId weglassen und vermerken: "Parent-Seite nicht gefunden — Seite wird auf Root-Ebene angelegt."
 Falls confluence_parent_page eine numerische ID ist: direkt als parentId verwenden.

@@ -115,6 +115,12 @@ Datei bearbeiten und committen → Claude Code lädt die neue Version beim näch
 `hooks/hooks.json` und die zugehörigen `.sh`-Dateien bearbeiten.  
 `${CLAUDE_PLUGIN_ROOT}` zeigt zur Plugin-Installation — nie absolute `$HOME/.claude/`-Pfade verwenden.
 
+Nach Änderungen an Hooks bitte mit `shellcheck` prüfen:
+```bash
+shellcheck hooks/*.sh
+```
+(`brew install shellcheck` falls nicht vorhanden.) Da Sicherheits-Hooks fail-closed sein sollen, ist statische Analyse hier besonders wichtig.
+
 ---
 
 ## Installation

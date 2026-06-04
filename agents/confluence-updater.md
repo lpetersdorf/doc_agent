@@ -56,6 +56,8 @@ Rufe `mcp__claude_ai_Atlassian__searchConfluenceUsingCql` auf:
 ```
 cloudId: <aus Schritt 2>
 cql: title = "<confluence_title>" AND space.key = "<confluence_space>" AND type = page
+
+  Hinweis: Enthält der Titel doppelte Anführungszeichen, diese in der CQL-Abfrage mit \" escapen oder auf einfache Anführungszeichen wechseln: title = '<confluence_title>'
 ```
 
 **Ergebnis:**
