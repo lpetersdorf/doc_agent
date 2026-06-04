@@ -161,9 +161,31 @@ Wähle anhand der Ergebnisse (nicht-leer = vorhanden):
 
 Warte auf Abschluss der Analyse(n).
 
-### Schritt P4: Confluence-Agent aufrufen
+### Schritt P4: Duplikat-Check und Confluence-Agent auswählen
 
-Starte `confluence-publisher` mit folgendem Kontext:
+**Nur ausführen, wenn `confluence_space` und `confluence_title` aus Schritt P2 bekannt sind.**
+
+Prüfe zuerst, ob eine Seite mit diesem Titel im Space bereits existiert:
+
+```
+Rufe `mcp__claude_ai_Atlassian__getAccessibleAtlassianResources` auf → cloudId
+Rufe `mcp__claude_ai_Atlassian__searchConfluenceUsingCql` auf:
+  cloudId: <cloudId>
+  cql: title = "<confluence_title>" AND space.key = "<confluence_space>" AND type = page
+```
+
+**Ergebnis bestimmt den Agent:**
+
+| Ergebnis | Agent |
+|---|---|
+| Seite **nicht** gefunden | `confluence-publisher` (Neu-Erstellung) |
+| Seite **gefunden** | `confluence-updater` (idempotentes Update) |
+
+Teile dem Nutzer kurz mit, welcher Pfad gewählt wurde:
+- Neu: `"Keine bestehende Seite gefunden — erstelle neu mit confluence-publisher."`
+- Update: `"Bestehende Seite gefunden — aktualisiere mit confluence-updater."`
+
+Starte den gewählten Agent mit folgendem Kontext:
 - Inhalt von `repo-analysis.md` (falls vorhanden)
 - Inhalt von `diagram-analysis.md` (falls vorhanden)
 - Inhalt von `document-analysis.md` (falls vorhanden)
