@@ -46,7 +46,7 @@ Dokumentation:
 
 ─────────────────────────────────────────────
 Nächste Schritte:
-  [Kontext-abhängige Empfehlung — z.B. "/document" zum Erstellen, "/document-sync" zum Update]
+  [Kontext-abhängige Empfehlung — z.B. "/solution-agent:document-project" zum Erstellen, "/solution-agent:document-sync" zum Update]
 ```
 
 ## Nächste-Schritte-Logik
@@ -57,4 +57,4 @@ Nächste Schritte:
 | Nur Analyse-Reports, keine Preview | Führe `/solution-agent:document-project` aus — die Preview fehlt noch |
 | Preview vorhanden, frisch (< 1 Tag) | Bereit für `/solution-agent:document-sync` oder Confluence-Publish |
 | Preview vorhanden, älter als 7 Tage | Erwäge eine neue Analyse mit `/solution-agent:document-project` |
-| Offene Prüfpunkte > 0 | Preview vor Publish manuell prüfen oder `doc-reviewer`-Agent starten |
+| Offene Prüfpunkte > 0 | Preview vor Publish manuell prüfen oder `/solution-agent:document-project` mit Fokus auf `doc-reviewer` starten |
