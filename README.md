@@ -14,13 +14,33 @@ A Claude Code **plugin** for documenting projects and researching Confluence Sol
 
 ## Usage
 
-Open Claude Code in any project and type:
+### Claude CLI
+
+Nach der Installation:
+
+1. Wechsle in das zu dokumentierende Projektverzeichnis und öffne dort ein Terminal.
+2. Starte Claude (`claude`).
+3. Verwende in Claude den Skill, um den Projektordner zu dokumentieren:
 
 ```
-/solution-agent:document-project
+/document-project
 ```
 
-Without arguments the skill asks which path you want:
+### Claude Cowork / Chat
+
+Wenn du lieber **Cowork** oder den **Chat** nutzt, muss das Plugin zunächst in den
+Einstellungen aktiviert werden:
+
+1. Öffne **Einstellungen → Fähigkeiten → Skills**.
+2. Über **Plugin erstellen** lässt sich ein Marketplace hinzufügen — füge den
+   Marketplace `lpetersdorf/doc_agent` hinzu.
+3. Aktiviere anschließend den **Solution Agent**.
+
+Danach stehen die Skills des Plugins in Cowork und Chat zum Dokumentieren zur Verfügung.
+
+### Pfade (PUSH / PULL)
+
+Ohne Argument fragt der Skill, welchen Pfad du möchtest:
 
 - **PUSH** — Analyse a local project or remote repo and publish documentation to Confluence
 - **PULL** — Research existing Confluence Solution Design documents
@@ -28,8 +48,8 @@ Without arguments the skill asks which path you want:
 You can also pass your request directly:
 
 ```
-/solution-agent:document-project analysiere das Repo github.com/… und erstell eine Confluence-Seite
-/solution-agent:document-project was steht im Solution Design zum Payment Service?
+/document-project analysiere das Repo github.com/… und erstell eine Confluence-Seite
+/document-project welche Solution Designs beschäftigen sich mit Databricks?
 ```
 
 ## What it does
@@ -42,6 +62,22 @@ You can also pass your request directly:
 | "Was steht im Solution Design zu X?" | `solution-researcher` |
 | "Analysiere Repo und erstell Confluence-Doku" | `repo-analyzer` → `confluence-publisher` |
 | "Vollständige Doku: Repo + Bilder + Confluence" | `repo-analyzer` + `diagram-analyzer` → `confluence-publisher` |
+
+## Skills
+
+| Skill | Zweck |
+|---|---|
+| `/document-project` | Orchestriert Analyse und Confluence-Dokumentation (PUSH) oder Confluence-Recherche (PULL) |
+| `/document-status` | Zeigt vorhandene Analyse-Artefakte und die Dokumentations-Vorschau im aktuellen Verzeichnis |
+| `/document-sync` | Aktualisiert eine bestehende Confluence-Seite mit der vorhandenen `dokumentation-preview.md` — ohne Duplikat zu erstellen |
+
+## Sicherheit
+
+Das Plugin bringt Sicherheits-Hooks mit, die automatisch greifen:
+
+- Bash-Befehle und Read-Zugriffe auf Credential-Dateien (z. B. `.env`) werden blockiert.
+- `git push` und destruktive Operationen werden in geklonten Analyse-Repos (`/tmp/repo-analyzer-*`)
+  unterbunden — dein lokales Arbeitsverzeichnis bleibt davon unberührt.
 
 ## Requirements
 
