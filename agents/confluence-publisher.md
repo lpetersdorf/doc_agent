@@ -73,18 +73,20 @@ Bevor du in Confluence veröffentlichst, prüfe die Vorschau auf Qualitätsprobl
 
 ```bash
 # Anzahl offener "Bitte prüfen"-Stellen
-grep -c "Bitte pruefen\|Bitte prüfen" dokumentation-preview.md 2>/dev/null || echo "0"
+open=$(grep -c "Bitte pruefen\|Bitte prüfen" dokumentation-preview.md 2>/dev/null); open=${open:-0}
+echo "Offene Prüfpunkte: $open"
 
 # Mögliche Secrets scannen — NUR Anzahl ausgeben, keine Werte
-grep -ciE "(password|passwd|secret|api.?key|token|private.?key|access.?key)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{16,}" \
-  dokumentation-preview.md 2>/dev/null || echo "0"
+secrets=$(grep -ciE "(password|passwd|secret|api.?key|token|private.?key|access.?key)[[:space:]]*[:=][[:space:]]*['\"]?[A-Za-z0-9+/]{16,}" \
+  dokumentation-preview.md 2>/dev/null); secrets=${secrets:-0}
+echo "Mögliche Secrets: $secrets"
 ```
 
 Zeige dem Nutzer eine kurze Zusammenfassung:
 ```
 📋 Qualitätsprüfung vor Publish:
-  ⚠️  Offene Prüfpunkte: [Anzahl]
-  🔒  Mögliche Secrets: [Anzahl]
+  ⚠️  Offene Prüfpunkte: $open
+  🔒  Mögliche Secrets: $secrets
 ```
 
 **Stopp-Bedingungen (nicht veröffentlichen, Nutzer warnen):**

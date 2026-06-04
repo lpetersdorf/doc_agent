@@ -28,23 +28,28 @@ Falls nicht vorhanden: Abbruch — "Keine `dokumentation-preview.md` im aktuelle
 
 ```bash
 # Gesamtzahl der Zeilen
-wc -l < dokumentation-preview.md
+total_lines=$(wc -l < dokumentation-preview.md)
+echo "Zeilen: $total_lines"
 
 # Anzahl offener Prüfpunkte
-grep -c "Bitte pruefen\|Bitte prüfen\|⚠️" dokumentation-preview.md || echo "0"
+open_count=$(grep -c "Bitte pruefen\|Bitte prüfen\|⚠️" dokumentation-preview.md 2>/dev/null); open_count=${open_count:-0}
+echo "Offene Prüfpunkte: $open_count"
 
 # Leere Abschnitte (H2/H3 direkt gefolgt von leerem Inhalt oder nächster Überschrift)
 grep -n "^##" dokumentation-preview.md
 
 # Nicht ausgefüllte Template-Platzhalter
-grep -cnE "^\s*-\s*\*\*[^*]+:\*\*\s*$|^\|\s*\|\s*\|\s*\|" dokumentation-preview.md || echo "0"
+empty_fields=$(grep -cnE "^\s*-\s*\*\*[^*]+:\*\*\s*$|^\|\s*\|\s*\|\s*\|" dokumentation-preview.md 2>/dev/null); empty_fields=${empty_fields:-0}
+echo "Ungefüllte Felder: $empty_fields"
 
 # Mögliche Secrets — NUR ANZAHL, keine Werte ausgeben
-grep -ciE "(password|passwd|secret|api.?key|token|private.?key|access.?key)\s*[:=]\s*['\"]?[A-Za-z0-9+/]{16,}" \
-  dokumentation-preview.md || echo "0"
+secret_count=$(grep -ciE "(password|passwd|secret|api.?key|token|private.?key|access.?key)[[:space:]]*[:=][[:space:]]*['\"]?[A-Za-z0-9+/]{16,}" \
+  dokumentation-preview.md 2>/dev/null); secret_count=${secret_count:-0}
+echo "Mögliche Secrets: $secret_count"
 
 # Mögliche hardkodierte URLs mit Credentials (http://user:pass@)
-grep -cE "https?://[^@[:space:]]+:[^@[:space:]]+@" dokumentation-preview.md || echo "0"
+cred_urls=$(grep -cE "https?://[^@[:space:]]+:[^@[:space:]]+@" dokumentation-preview.md 2>/dev/null); cred_urls=${cred_urls:-0}
+echo "Credential-URLs: $cred_urls"
 ```
 
 ### Schritt 3: Vollständigkeit prüfen

@@ -35,7 +35,7 @@ Andernfalls, falls noch nicht bekannt, stelle **eine** kompakte Frage:
 Bevor der Update-Agent startet, führe eine schnelle Validierung durch:
 
 ```bash
-count=$(grep -c "Bitte pruefen\|Bitte prüfen\|⚠️" dokumentation-preview.md 2>/dev/null || echo "0")
+count=$(grep -c "Bitte pruefen\|Bitte prüfen\|⚠️" dokumentation-preview.md 2>/dev/null); count=${count:-0}
 echo "Offene Prüfpunkte: $count"
 ```
 
