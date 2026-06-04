@@ -7,12 +7,12 @@
   "plugins": [
     {
       "name": "solution-agent",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "Documentation & analysis orchestrator — dokumentiert Projekte nach Confluence und recherchiert Solution Designs",
       "source": {
         "source": "url",
         "url": "https://github.com/lpetersdorf/doc_agent.git",
-        "sha": "fa4c4bbd40a8ad3ca462f5f19239a1f66d370f29"
+        "sha": "1085a3f2dcb08f1ffa79f7d9b017a94d4b5ac444"
       }
     }
   ]
