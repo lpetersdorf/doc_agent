@@ -67,31 +67,18 @@ Enthaltene Abschnitte:
 ⚠️  Offene Punkte: [Anzahl Stellen mit "Bitte prüfen"]
 ```
 
-### Schritt 4b: Dokumentation vor dem Publish validieren
+### Schritt 4b: Dokumentation vor dem Publish validieren (via doc-reviewer)
 
-Bevor du in Confluence veröffentlichst, prüfe die Vorschau auf Qualitätsprobleme:
+Bevor du in Confluence veröffentlichst, rufe den `doc-reviewer`-Agenten auf. Dieser prüft `dokumentation-preview.md` vollständig auf Vollständigkeit, offene Prüfpunkte und mögliche Secrets und gibt eine der drei Empfehlungen zurück:
 
-```bash
-# Anzahl offener "Bitte prüfen"-Stellen
-open=$(grep -c "Bitte pruefen\|Bitte prüfen" dokumentation-preview.md 2>/dev/null); open=${open:-0}
-echo "Offene Prüfpunkte: $open"
+- `🟢 GO` → weiter mit Schritt 5
+- `🟡 WARN` → Nutzer informieren und fragen, ob trotzdem veröffentlicht werden soll
+- `🔴 STOP` → **nicht veröffentlichen**, Nutzer auf das Problem hinweisen
 
-# Mögliche Secrets scannen — NUR Anzahl ausgeben, keine Werte
-secrets=$(grep -ciE "(password|passwd|secret|api.?key|token|private.?key|access.?key)[[:space:]]*[:=][[:space:]]*['\"]?[A-Za-z0-9+/]{16,}" \
-  dokumentation-preview.md 2>/dev/null); secrets=${secrets:-0}
-echo "Mögliche Secrets: $secrets"
-```
+**Stopp-Bedingungen (niemals veröffentlichen):**
+- `doc-reviewer` gibt `🔴 STOP` zurück (insbesondere bei möglichen Secrets)
 
-Zeige dem Nutzer eine kurze Zusammenfassung:
-```
-📋 Qualitätsprüfung vor Publish:
-  ⚠️  Offene Prüfpunkte: $open
-  🔒  Mögliche Secrets: $secrets
-```
-
-**Stopp-Bedingungen (nicht veröffentlichen, Nutzer warnen):**
-- Mögliche Secrets > 0 → **sofort stoppen**, Datei nicht veröffentlichen
-- Offene Prüfpunkte > 10 → Nutzer fragen, ob er trotzdem veröffentlichen möchte
+Warte auf das Ergebnis des `doc-reviewer`, bevor du mit Schritt 5 fortfährst.
 
 ### Schritt 5: In Confluence veröffentlichen
 
