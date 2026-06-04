@@ -81,9 +81,11 @@ Claude delegiert an den passenden Sub-Agenten (agents/)
 | Datei | Zweck |
 |---|---|
 | `hooks.json` | Registriert Hooks via `PreToolUse`; nutzt `${CLAUDE_PLUGIN_ROOT}` für Pfade |
-| `block-env-bash.sh` | Blockiert Bash-Befehle, die `.env`-Dateien lesen würden |
-| `block-env-read.sh` | Blockiert Read-Tool-Zugriff auf `.env`-Dateien |
-| `block-destructive-ops.sh` | Blockiert `git push` und Destruktiv-Operationen in Analyse-Repos |
+| `block-env-bash.sh` | Blockiert Bash-Befehle, die Credential-Dateien lesen würden (global, alle Verzeichnisse) |
+| `block-env-read.sh` | Blockiert Read-Tool-Zugriff auf Credential-Dateien (global); fail-closed mit jq/python3-Fallback |
+| `block-destructive-ops.sh` | Blockiert `git push` und Destruktiv-Operationen **nur** in geklonten Analyse-Repos (`/tmp/repo-analyzer-*`) |
+
+> **Sicherheitsmodell `block-destructive-ops.sh`:** Der Scope auf `/tmp/repo-analyzer-*` ist **bewusst**. Der Hook schützt ausschließlich geklonte Remote-Repos davor, dass ein Analyse-Agent versehentlich in ein fremdes Repository pusht oder Build-Befehle ausführt. Im lokalen Arbeitsverzeichnis des Nutzers (`cwd`) sind diese Operationen weiterhin erlaubt — der Nutzer gilt dort als vertrauenswürdig, und der normale Claude-Code-Berechtigungsdialog greift wie gewohnt.
 
 ### `templates/`
 
