@@ -119,20 +119,24 @@ Führe diese Erkennung im Quellverzeichnis aus (lokaler Pfad oder geklontes Repo
 
 ```bash
 # Hat Code / Git?
-HAS_CODE=$(find <QUELLPFAD> -not -path '*/.git/*' -not -path '*/node_modules/*' \
-  -maxdepth 3 -name ".git" -o -name "package.json" -o -name "requirements.txt" \
-  -o -name "go.mod" -o -name "pom.xml" -o -name "Cargo.toml" -o -name "*.csproj" \
+HAS_CODE=$(find <QUELLPFAD> -maxdepth 3 \
+  -not -path '*/.git/*' -not -path '*/node_modules/*' \
+  \( -name ".git" -o -name "package.json" -o -name "requirements.txt" \
+     -o -name "go.mod" -o -name "pom.xml" -o -name "Cargo.toml" -o -name "*.csproj" \) \
   2>/dev/null | head -1)
 
 # Hat Bilddateien / Diagramme?
-HAS_DIAGRAMS=$(find <QUELLPFAD> -not -path '*/.git/*' -not -path '*/node_modules/*' \
-  -not -path '*/dist/*' -not -path '*/build/*' -maxdepth 5 \
+HAS_DIAGRAMS=$(find <QUELLPFAD> -maxdepth 5 \
+  -not -path '*/.git/*' -not -path '*/node_modules/*' \
+  -not -path '*/dist/*' -not -path '*/build/*' \
   \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.svg" -o -iname "*.drawio" \
-     -o -iname "*.puml" -o -iname "*.mmd" \) 2>/dev/null | head -1)
+     -o -iname "*.puml" -o -iname "*.mmd" \) \
+  2>/dev/null | head -1)
 
 # Hat Prosa-Dokumente?
-HAS_DOCS=$(find <QUELLPFAD> -not -path '*/.git/*' -not -path '*/node_modules/*' \
-  -maxdepth 5 \( -iname "*.pdf" -o -iname "*.docx" -o -iname "*.pptx" \
+HAS_DOCS=$(find <QUELLPFAD> -maxdepth 5 \
+  -not -path '*/.git/*' -not -path '*/node_modules/*' \
+  \( -iname "*.pdf" -o -iname "*.docx" -o -iname "*.pptx" \
      -o -iname "*.txt" -o -iname "*.rst" \
      -o \( -iname "*.md" \( -path "*/docs/*" -o -path "*/spec/*" \
             -o -path "*/notes/*" -o -path "*/requirements/*" -o -path "*/adr/*" \) \) \) \
