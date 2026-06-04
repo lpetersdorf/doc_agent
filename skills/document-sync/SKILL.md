@@ -30,16 +30,15 @@ Andernfalls, falls noch nicht bekannt, stelle **eine** kompakte Frage:
 > 1. **Space Key** (z.B. `PROJ`, `ARCH`) — in welchem Confluence-Space liegt die Seite?
 > 2. **Seitentitel** — wie heißt die bestehende Seite? (Vorschlag aus Preview: `[abgeleiteter Titel]`)"
 
-### Schritt 3: Qualitäts-Check
+### Schritt 3: Qualitäts-Check via doc-reviewer
 
-Bevor der Update-Agent startet, führe eine schnelle Validierung durch:
+Bevor der Update-Agent startet, rufe den `doc-reviewer`-Agenten auf. Er prüft `dokumentation-preview.md` vollständig und gibt eine der drei Empfehlungen zurück:
 
-```bash
-count=$(grep -c "Bitte pruefen\|Bitte prüfen\|⚠️" dokumentation-preview.md 2>/dev/null); count=${count:-0}
-echo "Offene Prüfpunkte: $count"
-```
+- `🟢 GO` → weiter mit Schritt 4
+- `🟡 WARN` → Nutzer informieren und fragen, ob trotzdem synchronisiert werden soll
+- `🔴 STOP` → **nicht synchronisieren**, Nutzer auf das Problem hinweisen (insbesondere bei möglichen Secrets)
 
-Falls > 5 offene Prüfpunkte: Nutzer informieren und fragen, ob trotzdem synchronisiert werden soll.
+Warte auf das Ergebnis des `doc-reviewer`, bevor du mit Schritt 4 fortfährst.
 
 ### Schritt 4: confluence-updater starten
 
