@@ -48,8 +48,8 @@ Ohne Argument fragt der Skill, welchen Pfad du möchtest:
 You can also pass your request directly:
 
 ```
-/document-project analysiere das Repo github.com/… und erstell eine Confluence-Seite
-/document-project welche Solution Designs beschäftigen sich mit Databricks?
+/document-project Analysiere mein aktuelles Projektverzeichnis und erstelle eine Confluence Doku dazu.
+/document-project Welche vorhandenen Solution Designs beschäftigen sich mit Databricks?
 ```
 
 ## What it does
